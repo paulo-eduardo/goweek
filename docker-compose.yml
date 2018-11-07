@@ -1,0 +1,48 @@
+version: '3.6'
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/usr/src/backend
+    ports: 
+      - "3000:3000"
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+  # web:
+  #   build:
+  #     context: ./web
+  #     target: dev
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./web:/usr/src/web
+  #   links:
+  #     - api
+  #   depends_on:
+  #     - api
+  mongodb:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - mongodb-data:/data/db
+    ports:
+      - "27017:27017"
+    command: mongod --smallfiles --logpath=/dev/null # --quiet
+  mongoadmin:
+    image: mongo-express:latest
+    restart: always
+    ports:
+      - "5000:8081"
+    environment: 
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb-data:

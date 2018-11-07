@@ -1,0 +1,14 @@
+### STAGE 1: Common ###
+FROM node:11 as common
+RUN mkdir /usr/src/backend
+WORKDIR /usr/src/backend
+COPY package.json /usr/src/backend/package.json
+RUN yarn install --silent
+COPY . /usr/src/backend
+
+### STAGE 2: Dev ###
+FROM node:11 as dev
+RUN mkdir /usr/src/backend
+WORKDIR /usr/src/backend
+COPY --from=common /usr/src/backend /usr/src/backend
+CMD ["yarn", "start"]
