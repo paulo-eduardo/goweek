@@ -5,23 +5,23 @@ services:
     volumes:
       - ./backend:/usr/src/backend
     ports: 
-      - "3000:3000"
+      - "3001:3001"
     links:
       - mongodb
     depends_on:
       - mongodb
-  # web:
-  #   build:
-  #     context: ./web
-  #     target: dev
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - ./web:/usr/src/web
-  #   links:
-  #     - api
-  #   depends_on:
-  #     - api
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/usr/src/frontend
+    links:
+      - backend
+    depends_on:
+      - backend
   mongodb:
     image: mongo:latest
     environment:

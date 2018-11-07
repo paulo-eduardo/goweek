@@ -1,0 +1,27 @@
+### STAGE 1: Common ###
+FROM node:11 as common
+RUN mkdir /usr/src/frontend
+WORKDIR /usr/src/frontend
+COPY package.json /usr/src/frontend/package.json
+RUN yarn install --silent
+COPY . /usr/src/frontend
+
+### STAGE 2: Dev ###
+FROM node:11 as dev
+RUN mkdir /usr/src/frontend
+WORKDIR /usr/src/frontend
+COPY --from=common /usr/src/frontend /usr/src/frontend
+CMD ["yarn", "start"]
+
+# ### STAGE 3: Build ###
+# FROM node:11 as build
+# RUN mkdir /usr/src/frontend
+# WORKDIR /usr/src/frontend
+# COPY --from=common /usr/src/frontend /usr/src/frontend
+# RUN yarn run build
+
+# ### STAGE 4: Production Environment ###
+# FROM nginx:1.13.12-alpine
+# COPY --from=build /usr/src/frontend/build /usr/share/nginx/html
+# EXPOSE 80
+# CMD ["nginx", "-g", "daemon off;"]
